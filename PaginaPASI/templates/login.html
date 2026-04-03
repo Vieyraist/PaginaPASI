@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<section class="login-wrapper">
+
+  <div class="login-card">
+
+    <h2>PASI Industrial</h2>
+    <p class="subtitle">Acceso administrativo</p>
+
+    <form method="POST" class="login-form">
+
+      <div class="input-group">
+        <input type="text" name="user" required>
+        <label>Usuario</label>
+      </div>
+
+      <div class="input-group">
+        <input type="password" name="pass" required>
+        <label>Contraseña</label>
+      </div>
+
+      <button type="submit">Entrar</button>
+
+    </form>
+
+  </div>
+
+</section>
+
+{% endblock %}
