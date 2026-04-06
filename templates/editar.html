@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<section class="section">
+  <h2>Editar Proyecto</h2>
+
+  <div class="admin-card">
+
+    <form method="POST" enctype="multipart/form-data">
+
+      <!-- INPUTS -->
+      <input type="text" name="nombre" value="{{ proyecto.nombre }}" required>
+      <input type="text" name="ubicacion" value="{{ proyecto.ubicacion }}" required>
+
+      <!-- ================= IMÁGENES ACTUALES ================= -->
+      <h3 style="margin-top:30px;">📸 Imágenes actuales</h3>
+
+      <div class="preview">
+        {% for img in proyecto.imagenes %}
+        <div class="preview-box">
+
+          <!-- 🔥 URL DESDE SUPABASE -->
+          <img src="{{ img.filename }}">
+
+          <a href="{{ url_for('eliminar_imagen', id=img.id) }}" class="delete-btn">✕</a>
+
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- ================= AGREGAR NUEVAS ================= -->
+      <h3 style="margin-top:30px;">➕ Agregar imágenes</h3>
+
+      <div class="drop-zone" id="drop-zone">
+        <p id="drop-text">Arrastra imágenes aquí o haz clic</p>
+        <input type="file" name="imagenes" multiple id="file-input" hidden>
+      </div>
+
+      <!-- PREVIEW -->
+      <div id="preview"></div>
+
+      <button type="submit">Guardar Cambios</button>
+
+    </form>
+
+  </div>
+</section>
+
+<script>
+const dropZone = document.getElementById("drop-zone");
+const input = document.getElementById("file-input");
+const preview = document.getElementById("preview");
+const text = document.getElementById("drop-text");
+
+let filesArray = [];
+
+// CLICK
+dropZone.onclick = () => input.click();
+
+// SELECCIÓN
+input.addEventListener("change", ()=>{
+  handleFiles(input.files);
+});
+
+// DRAG
+dropZone.addEventListener("dragover", e=>{
+  e.preventDefault();
+  dropZone.classList.add("active");
+});
+
+dropZone.addEventListener("dragleave", ()=>{
+  dropZone.classList.remove("active");
+});
+
+dropZone.addEventListener("drop", e=>{
+  e.preventDefault();
+  dropZone.classList.remove("active");
+  handleFiles(e.dataTransfer.files);
+});
+
+// PROCESAR
+function handleFiles(files){
+  filesArray = [...files];
+
+  // 🔥 reconstruir input correctamente
+  const dt = new DataTransfer();
+  filesArray.forEach(f => dt.items.add(f));
+  input.files = dt.files;
+
+  renderPreview();
+  actualizarTexto();
+}
+
+// TEXTO DINÁMICO
+function actualizarTexto(){
+  text.innerText =
+    filesArray.length === 0
+      ? "Arrastra imágenes aquí o haz clic"
+      : filesArray.length === 1
+        ? "1 imagen lista"
+        : filesArray.length + " imágenes listas";
+}
+
+// PREVIEW
+function renderPreview(){
+  preview.innerHTML = "";
+
+  filesArray.forEach((file, index) => {
+    const reader = new FileReader();
+
+    reader.onload = e=>{
+      const box = document.createElement("div");
+      box.classList.add("preview-box");
+
+      const img = document.createElement("img");
+      img.src = e.target.result;
+
+      const remove = document.createElement("button");
+      remove.innerHTML = "✕";
+
+      remove.onclick = (ev)=>{
+        ev.stopPropagation();
+
+        filesArray.splice(index,1);
+
+        const dt = new DataTransfer();
+        filesArray.forEach(f => dt.items.add(f));
+        input.files = dt.files;
+
+        renderPreview();
+        actualizarTexto();
+      };
+
+      box.appendChild(img);
+      box.appendChild(remove);
+      preview.appendChild(box);
+    };
+
+    reader.readAsDataURL(file);
+  });
+}
+</script>
+
+{% endblock %}

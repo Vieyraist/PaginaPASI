@@ -1,0 +1,14 @@
+# 🔐 Variables sensibles
+.env
+
+# 🐍 Python
+__pycache__/
+*.pyc
+
+# 📦 Entornos virtuales
+venv/
+.env/
+
+# 🗂 Archivos del sistema
+.DS_Store
+Thumbs.db
