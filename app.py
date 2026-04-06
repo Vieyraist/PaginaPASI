@@ -1,17 +1,22 @@
 from flask import Flask, render_template, request, redirect, session
 from flask_sqlalchemy import SQLAlchemy
 from supabase import create_client
+from dotenv import load_dotenv
 import uuid
 import os
+
+# 🔥 CARGAR VARIABLES .env
+load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = "supersecretkey"
 
 # ================= SUPABASE =================
-SUPABASE_URL = "https://dlghtzwjtvkrsybztnji.supabase.co"
-SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRsZ2h0endqdHZrcnN5Ynp0bmppIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NTIxODc4MiwiZXhwIjoyMDkwNzk0NzgyfQ.BB61hZJZIkIWVG0c5LjfF3yrR8LY0_ncTWu-vV04bgc"
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+
 
 # ================= DB =================
 app.config["SQLALCHEMY_DATABASE_URI"] = (
