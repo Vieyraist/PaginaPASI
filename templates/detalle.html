@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block body_class %}internal{% endblock %}
+{% block title %}Proyecto{% endblock %}
+
+{% block content %}
+
+<section class="section">
+  <h2>{{ proyecto.nombre }}</h2>
+  <p>{{ proyecto.ubicacion }}</p>
+
+  <div class="gallery">
+    {% for img in imagenes %}
+      <img src="{{ img.filename if img.filename.startswith('http') else 'https://dlghtzwjtvkrsybztnji.supabase.co/storage/v1/object/public/proyectos/' ~ proyecto.id ~ '/' ~ img.filename }}">
+    {% endfor %}
+  </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>{% block title %}PASI Industrial{% endblock %}</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+
+<body class="{% block body_class %}{% endblock %}">
+
+<!-- HEADER GLOBAL -->
+<header id="header">
+  <div class="header-container">
+
+    <a href="{{ url_for('index') }}" class="logo">
+      <img src="{{ url_for('static', filename='img/logo.png') }}">
+    </a>
+
+ <nav id="nav-menu">
+
+  <a href="{{ url_for('index') }}">
+    <svg viewBox="0 0 24 24"><path d="M3 9L12 3l9 6v12H3z"/></svg>
+    <span>Inicio</span>
+  </a>
+
+  <a href="{{ url_for('servicios') }}">
+    <svg viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4"/></svg>
+    <span>Servicios</span>
+  </a>
+
+  <a href="{{ url_for('proyectos') }}">
+    <svg viewBox="0 0 24 24"><path d="M3 7h5l2 3h11v10H3z"/></svg>
+    <span>Proyectos</span>
+  </a>
+
+  <a href="{{ url_for('contacto') }}">
+    <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M4 4l8 8 8-8"/></svg>
+    <span>Contacto</span>
+  </a>
+
+  {% if request.path.startswith('/proyectos') %}
+    {% if session.get("admin") %}
+      <a href="/logout" class="nav-btn logout">
+        <svg viewBox="0 0 24 24">
+          <path d="M16 17l5-5-5-5"/>
+          <path d="M21 12H9"/>
+          <path d="M9 3H5v18h4"/>
+        </svg>
+        <span>Salir</span>
+      </a>
+    {% else %}
+      <a href="/login" class="nav-btn login">
+        <svg viewBox="0 0 24 24">
+          <path d="M10 17l5-5-5-5"/>
+          <path d="M15 12H3"/>
+          <path d="M21 3v18"/>
+        </svg>
+        <span>Login</span>
+      </a>
+    {% endif %}
+  {% endif %}
+
+
+</nav>
+
+    <div class="menu-toggle" id="menu-toggle">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+
+  </div>
+
+  <div class="menu-overlay" id="menu-overlay"></div>
+</header>
+
+<!-- CONTENIDO -->
+{% block content %}{% endblock %}
+
+<!-- FOOTER -->
+<footer class="footer">
+
+  <div class="footer-container">
+
+    <div class="footer-col">
+      <h3>PASI Industrial</h3>
+      <p>Soluciones industriales que protegen y perduran.</p>
+    </div>
+
+    <div class="footer-col">
+      <h4>Contacto</h4>
+      <p>📍 Jalisco, México</p>
+      <p>📧 pasi_servicios@hotmail.com</p>
+      <p>📞 +52 33 1696 8241</p>
+    </div>
+
+    <div class="footer-col map">
+      <h4>Ubicación</h4>
+      <iframe 
+        src="https://www.google.com/maps?q=Fuente+Chetumal+902+Tlaquepaque&output=embed"
+        loading="lazy">
+      </iframe>
+    </div>
+
+  </div>
+
+  <div class="footer-bottom">
+    © 2026 PASI Industrial |
+    <a href="{{ url_for('aviso') }}">Aviso de Privacidad</a>
+  </div>
+
+</footer>
+
+<!-- WHATSAPP -->
+<a class="whatsapp" href="https://wa.me/5213316968241" target="_blank">
+  <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png">
+</a>
+
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+
+  const toggle = document.getElementById("menu-toggle");
+  const nav = document.getElementById("nav-menu");
+  const overlay = document.getElementById("menu-overlay");
+
+  function cerrar(){
+    toggle.classList.remove("active");
+    nav.classList.remove("active");
+    overlay.classList.remove("active");
+  }
+
+  toggle.addEventListener("click", ()=>{
+    toggle.classList.toggle("active");
+    nav.classList.toggle("active");
+    overlay.classList.toggle("active");
+  });
+
+  overlay.addEventListener("click", cerrar);
+
+  // 🔥 cerrar al hacer click en link
+  document.querySelectorAll("#nav-menu a").forEach(link=>{
+    link.addEventListener("click", cerrar);
+  });
+
+  // 🔥 cerrar al hacer scroll
+  window.addEventListener("scroll", cerrar);
+
+});
+</script>
+<!-- MODAL ELIMINAR -->
+<div id="modal-eliminar" class="modal">
+  <div class="modal-content">
+
+    <h3>⚠️ Eliminar proyecto</h3>
+    <p>¿Estás seguro? Esta acción no se puede deshacer.</p>
+
+    <div class="modal-actions">
+      <button class="btn cancel" onclick="cerrarModal()">Cancelar</button>
+      <button class="btn danger" id="confirm-delete">Eliminar</button>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>
